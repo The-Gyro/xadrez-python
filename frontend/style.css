@@ -1,0 +1,30 @@
+body {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    background-color: #222;
+}
+
+#tabuleiro {
+    display: grid;
+    grid-template-columns: repeat(8, 70px);
+    grid-template-rows: repeat(8, 70px);
+}
+
+#tabuleiro div {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
+}
+
+.branca {
+    background: #f0d9b5;
+}
+
+.preta {
+    background: #b58863;
+}
