@@ -99,5 +99,12 @@ function atualizar() {
         });
 }
 
+function resetar() {
+    fetch("https://xadrez-python-1.onrender.com/reset", {
+        method: "POST"
+    })
+    .then(() => atualizar());
+}
+
 // iniciar
 atualizar();

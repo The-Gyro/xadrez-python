@@ -663,3 +663,19 @@ def processar_jogada(origem, destino):
         "board": board,
         "turno": turno
     }    
+
+def resetar_jogo():
+    global board, turno
+
+    board = [
+        ["r","n","b","q","k","b","n","r"],
+        ["p","p","p","p","p","p","p","p"],
+        [".",".",".",".",".",".",".","."],
+        [".",".",".",".",".",".",".","."],
+        [".",".",".",".",".",".",".","."],
+        [".",".",".",".",".",".",".","."],
+        ["P","P","P","P","P","P","P","P"],
+        ["R","N","B","Q","K","B","N","R"]
+    ]
+
+    turno = "brancas"
