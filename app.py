@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template
 import main
 import os
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
 
 @app.route("/")
