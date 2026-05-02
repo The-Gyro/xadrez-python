@@ -1,4 +1,4 @@
-console.log("JS CARREGOU");
+console.log("BOARD:", ultimoBoard);
 
 const tabuleiro = document.getElementById("tabuleiro");
 
@@ -80,7 +80,7 @@ function clicar(coord) {
         return;
     }
 
-    fetch("/move", {
+    fetch("https://xadrez-python-1.onrender.com/move", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
