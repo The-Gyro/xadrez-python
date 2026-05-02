@@ -98,6 +98,7 @@ function clicar(coord) {
     })
     .then(res => res.json())
     .then(data => {
+        console.log(data);
 
         if (data.erro) {
             alert(data.erro);
