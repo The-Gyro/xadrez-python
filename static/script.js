@@ -14,27 +14,26 @@ let ultimoBoard = [];
 
 function desenhar(board) {
     ultimoBoard = board;
+
+    const tabuleiro = document.getElementById("tabuleiro");
     tabuleiro.innerHTML = "";
 
     for (let l = 0; l < 8; l++) {
         for (let c = 0; c < 8; c++) {
 
-            const casa = board[l][c];
             const div = document.createElement("div");
 
             div.className = (l + c) % 2 === 0 ? "branca" : "preta";
 
             const coord = String.fromCharCode(97 + c) + (8 - l);
 
-            div.innerText = pecas[casa];
+            div.innerText = pecas[board[l][c]];
 
-            if (coord === selecionado) {
-                div.style.border = "2px solid red";
-            } else {
-                div.style.border = "1px solid black";
-            }
-
-            div.onclick = () => clicar(coord);
+            // 🔥 FORÇA O EVENTO FUNCIONAR (sem onclick)
+            div.addEventListener("click", () => {
+                console.log("CLICOU:", coord);
+                clicar(coord);
+            });
 
             tabuleiro.appendChild(div);
         }
