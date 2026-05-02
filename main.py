@@ -623,46 +623,52 @@ if __name__ == "__main__":
 def processar_jogada(origem, destino):
     global turno
 
-    partes = [origem, destino]
-
-    if len(partes) != 2:
-        return {"erro": "Formato inválido"}
-
-    if (
-        not coordenada_valida(origem)
-        or not coordenada_valida(destino)
-    ):
+    if not coordenada_valida(origem) or not coordenada_valida(destino):
         return {"erro": "Coordenadas inválidas"}
 
     l1, c1 = converter(origem)
     l2, c2 = converter(destino)
 
     peca = board[l1][c1]
+    destino_peca = board[l2][c2]
 
     if peca == ".":
-        return {"erro": "Sem peça"}
+        return {"erro": "Sem peça na origem"}
 
+    # turno correto
     if turno == "brancas" and not peca.isupper():
         return {"erro": "Turno das brancas"}
 
     if turno == "pretas" and not peca.islower():
         return {"erro": "Turno das pretas"}
 
+    # 🚫 NÃO PODE CAPTURAR PRÓPRIA PEÇA
+    if destino_peca != ".":
+        if peca.isupper() and destino_peca.isupper():
+            return {"erro": "Você não pode capturar sua própria peça"}
+
+        if peca.islower() and destino_peca.islower():
+            return {"erro": "Você não pode capturar sua própria peça"}
+
+    # movimento válido da peça
     if not movimento_valido(peca, l1, c1, l2, c2):
         return {"erro": "Movimento inválido"}
 
+    # não pode se colocar em xeque
     if deixa_em_xeque(peca, l1, c1, l2, c2):
         return {"erro": "Seu rei ficaria em xeque"}
 
+    # ✅ EXECUTA JOGADA
     board[l2][c2] = peca
     board[l1][c1] = "."
 
+    # troca turno
     turno = "pretas" if turno == "brancas" else "brancas"
 
     return {
         "board": board,
         "turno": turno
-    }    
+    }
 
 def resetar_jogo():
     global board, turno

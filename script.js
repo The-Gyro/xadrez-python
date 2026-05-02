@@ -51,6 +51,14 @@ function coordToIndex(coord) {
 // clique
 function clicar(coord) {
 
+    // 👉 se clicar na mesma peça → desmarca
+    if (selecionado === coord) {
+        selecionado = null;
+        atualizar();
+        return;
+    }
+
+    // 👉 primeira seleção
     if (!selecionado) {
         const [l, c] = coordToIndex(coord);
 
@@ -61,6 +69,23 @@ function clicar(coord) {
         return;
     }
 
+    // 👉 se clicar em OUTRA peça do MESMO time → troca seleção
+    const [l, c] = coordToIndex(coord);
+    const [lSel, cSel] = coordToIndex(selecionado);
+
+    const pecaOrigem = ultimoBoard[lSel][cSel];
+    const pecaDestino = ultimoBoard[l][c];
+
+    if (
+        (pecaOrigem === pecaOrigem.toUpperCase() && pecaDestino === pecaDestino.toUpperCase()) ||
+        (pecaOrigem === pecaOrigem.toLowerCase() && pecaDestino === pecaDestino.toLowerCase())
+    ) {
+        selecionado = coord;
+        atualizar();
+        return;
+    }
+
+    // 👉 jogada normal
     fetch("https://xadrez-python-1.onrender.com/move", {
         method: "POST",
         headers: {
