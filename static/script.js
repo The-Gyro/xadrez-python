@@ -13,6 +13,13 @@ const pecas = {
 let ultimoBoard = [];
 
 function desenhar(board) {
+    console.log("DESENHANDO BOARD:", board);
+
+    if (!board) {
+        console.log("Board inválido");
+        return;
+    }
+
     ultimoBoard = board;
 
     const tabuleiro = document.getElementById("tabuleiro");
@@ -27,9 +34,10 @@ function desenhar(board) {
 
             const coord = String.fromCharCode(97 + c) + (8 - l);
 
-            div.innerText = pecas[board[l][c]];
+            const peca = board?.[l]?.[c] ?? ".";
 
-            // 🔥 FORÇA O EVENTO FUNCIONAR (sem onclick)
+            div.innerText = pecas[peca] || "";
+
             div.addEventListener("click", () => {
                 console.log("CLICOU:", coord);
                 clicar(coord);
