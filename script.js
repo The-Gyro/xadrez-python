@@ -22,15 +22,12 @@ function desenhar(board) {
             const casa = board[l][c];
             const div = document.createElement("div");
 
-            // cor da casa
             div.className = (l + c) % 2 === 0 ? "branca" : "preta";
 
             const coord = String.fromCharCode(97 + c) + (8 - l);
 
-            // peça bonita
             div.innerText = pecas[casa];
 
-            // destaque seleção
             if (coord === selecionado) {
                 div.style.border = "2px solid red";
             } else {
@@ -44,22 +41,19 @@ function desenhar(board) {
     }
 }
 
-// converte coordenada (ex: e2 → índice do array)
+// converte coordenada
 function coordToIndex(coord) {
     const c = coord.charCodeAt(0) - 97;
     const l = 8 - parseInt(coord[1]);
     return [l, c];
 }
 
-// clique do usuário
+// clique
 function clicar(coord) {
 
-    // primeira seleção
     if (!selecionado) {
-
         const [l, c] = coordToIndex(coord);
 
-        // não deixa selecionar vazio
         if (ultimoBoard[l][c] === ".") return;
 
         selecionado = coord;
@@ -67,8 +61,7 @@ function clicar(coord) {
         return;
     }
 
-    // tentativa de jogada
-    fetch("https://xadrez-python-1.onrender.com", {
+    fetch("https://xadrez-python-1.onrender.com/move", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -81,7 +74,6 @@ function clicar(coord) {
     .then(res => res.json())
     .then(data => {
 
-        // se backend mandar erro
         if (data.erro) {
             alert(data.erro);
         }
@@ -95,9 +87,9 @@ function clicar(coord) {
     });
 }
 
-// busca o board atualizado
+// atualizar board
 function atualizar() {
-    fetch("https://xadrez-python-1.onrender.com")
+    fetch("https://xadrez-python-1.onrender.com/board")
         .then(res => res.json())
         .then(data => {
             desenhar(data);
@@ -107,5 +99,5 @@ function atualizar() {
         });
 }
 
-// inicia
+// iniciar
 atualizar();
