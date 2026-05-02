@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # 👈 ADICIONA ISSO
+from flask_cors import CORS
 import main
+import os
 
 app = Flask(__name__)
-CORS(app)  # 👈 E ISSO
+CORS(app)
+
 
 @app.route("/board", methods=["GET"])
 def board():
     return jsonify(main.board)
+
 
 @app.route("/move", methods=["POST"])
 def move():
@@ -17,12 +20,13 @@ def move():
 
     return jsonify(main.processar_jogada(origem, destino))
 
-import os
 
-port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port)
-
-@app.route("/reset", methods=["POST"])
+@app.route("/reset", methods=["GET", "POST"])
 def reset():
     main.resetar_jogo()
     return jsonify({"ok": True})
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
