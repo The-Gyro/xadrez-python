@@ -86,52 +86,80 @@ function clicar(coord) {
         return;
     }
 
-    // 👉 jogada normal
-    fetch("https://xadrez-python-1.onrender.com/move", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            origem: selecionado,
-            destino: coord
-        })
+   // jogada normal
+fetch("https://xadrez-python-1.onrender.com/move", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        origem: selecionado,
+        destino: coord
     })
-    .then(res => res.json())
-    .then(data => {
-        console.log(data);
+})
+.then(res => {
+    if (!res.ok) {
+        throw new Error("Erro HTTP: " + res.status);
+    }
+    return res.json();
+})
+.then(data => {
+    console.log("Resposta:", data);
 
-        if (data.erro) {
-            alert(data.erro);
-        }
+    if (data.erro) {
+        alert(data.erro);
+    }
 
-        selecionado = null;
-        atualizar();
-    })
-    .catch(() => {
-        alert("Erro ao conectar com o servidor.");
-        selecionado = null;
-    });
-}
+    selecionado = null;
+    atualizar();
+})
+.catch(err => {
+    console.error(err);
+    alert("Erro ao conectar com o servidor.");
+    selecionado = null;
+});
+
 
 // atualizar board
 function atualizar() {
     fetch("https://xadrez-python-1.onrender.com/board")
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Erro ao buscar board");
+            }
+            return res.json();
+        })
         .then(data => {
+            console.log("Board:", data);
             desenhar(data);
         })
-        .catch(() => {
+        .catch(err => {
+            console.error(err);
             console.log("Erro ao carregar tabuleiro");
         });
 }
 
+
+// reset
 function resetar() {
     fetch("https://xadrez-python-1.onrender.com/reset", {
         method: "POST"
     })
-    .then(() => atualizar());
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Erro no reset");
+        }
+        return res.json();
+    })
+    .then(() => {
+        atualizar();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erro ao resetar o jogo.");
+    });
 }
+
 
 // iniciar
 atualizar();
