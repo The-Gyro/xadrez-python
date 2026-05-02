@@ -1,8 +1,7 @@
-console.log("BOARD:", ultimoBoard);
-
-const tabuleiro = document.getElementById("tabuleiro");
+console.log("JS CARREGOU");
 
 let selecionado = null;
+let ultimoBoard = [];
 
 const pecas = {
     "P":"♙","R":"♖","N":"♘","B":"♗","Q":"♕","K":"♔",
@@ -10,15 +9,10 @@ const pecas = {
     ".":""
 };
 
-let ultimoBoard = [];
-
 function desenhar(board) {
     console.log("DESENHANDO BOARD:", board);
 
-    if (!board) {
-        console.log("Board inválido");
-        return;
-    }
+    if (!Array.isArray(board)) return;
 
     ultimoBoard = board;
 
@@ -29,19 +23,18 @@ function desenhar(board) {
         for (let c = 0; c < 8; c++) {
 
             const div = document.createElement("div");
-
             div.className = (l + c) % 2 === 0 ? "branca" : "preta";
 
             const coord = String.fromCharCode(97 + c) + (8 - l);
-
-            const peca = board?.[l]?.[c] ?? ".";
+            const peca = board[l][c];
 
             div.innerText = pecas[peca] || "";
 
-            div.addEventListener("click", () => {
-                console.log("CLICOU:", coord);
-                clicar(coord);
-            });
+            div.addEventListener("click", () => clicar(coord));
+
+            if (coord === selecionado) {
+                div.style.border = "2px solid red";
+            }
 
             tabuleiro.appendChild(div);
         }
@@ -55,6 +48,7 @@ function coordToIndex(coord) {
 }
 
 function clicar(coord) {
+    console.log("CLICOU:", coord);
 
     if (selecionado === coord) {
         selecionado = null;
@@ -64,24 +58,8 @@ function clicar(coord) {
 
     if (!selecionado) {
         const [l, c] = coordToIndex(coord);
-
         if (ultimoBoard[l][c] === ".") return;
 
-        selecionado = coord;
-        atualizar();
-        return;
-    }
-
-    const [l, c] = coordToIndex(coord);
-    const [lSel, cSel] = coordToIndex(selecionado);
-
-    const pecaOrigem = ultimoBoard[lSel][cSel];
-    const pecaDestino = ultimoBoard[l][c];
-
-    if (
-        (pecaOrigem === pecaOrigem.toUpperCase() && pecaDestino === pecaDestino.toUpperCase()) ||
-        (pecaOrigem === pecaOrigem.toLowerCase() && pecaDestino === pecaDestino.toLowerCase())
-    ) {
         selecionado = coord;
         atualizar();
         return;
@@ -99,38 +77,30 @@ function clicar(coord) {
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data);
+        console.log("MOVE:", data);
 
-        if (data.erro) {
-            alert(data.erro);
-        }
+        if (data.erro) alert(data.erro);
 
         selecionado = null;
         atualizar();
     })
     .catch(err => {
         console.error(err);
-        alert("Erro ao conectar com o servidor.");
         selecionado = null;
     });
 }
 
 function atualizar() {
-    fetch("/board")
+    fetch("https://xadrez-python-1.onrender.com/board")
         .then(res => res.json())
-        .then(data => {
-            desenhar(data);
-        })
-        .catch(err => {
-            console.error("Erro ao carregar tabuleiro", err);
-        });
+        .then(data => desenhar(data))
+        .catch(err => console.error(err));
 }
 
 function resetar() {
-    fetch("/reset", {
+    fetch("https://xadrez-python-1.onrender.com/reset", {
         method: "POST"
-    })
-    .then(() => atualizar());
+    }).then(() => atualizar());
 }
 
 atualizar();
