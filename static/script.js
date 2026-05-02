@@ -1,9 +1,9 @@
 console.log("JS CARREGOU");
+
 const tabuleiro = document.getElementById("tabuleiro");
 
 let selecionado = null;
 
-// peças bonitas
 const pecas = {
     "P":"♙","R":"♖","N":"♘","B":"♗","Q":"♕","K":"♔",
     "p":"♟","r":"♜","n":"♞","b":"♝","q":"♛","k":"♚",
@@ -12,7 +12,6 @@ const pecas = {
 
 let ultimoBoard = [];
 
-// desenha o tabuleiro
 function desenhar(board) {
     ultimoBoard = board;
     tabuleiro.innerHTML = "";
@@ -42,24 +41,20 @@ function desenhar(board) {
     }
 }
 
-// converte coordenada
 function coordToIndex(coord) {
     const c = coord.charCodeAt(0) - 97;
     const l = 8 - parseInt(coord[1]);
     return [l, c];
 }
 
-// clique
 function clicar(coord) {
 
-    // 👉 se clicar na mesma peça → desmarca
     if (selecionado === coord) {
         selecionado = null;
         atualizar();
         return;
     }
 
-    // 👉 primeira seleção
     if (!selecionado) {
         const [l, c] = coordToIndex(coord);
 
@@ -70,7 +65,6 @@ function clicar(coord) {
         return;
     }
 
-    // 👉 se clicar em OUTRA peça do MESMO time → troca seleção
     const [l, c] = coordToIndex(coord);
     const [lSel, cSel] = coordToIndex(selecionado);
 
@@ -86,80 +80,50 @@ function clicar(coord) {
         return;
     }
 
-   // jogada normal
-fetch("https://xadrez-python-1.onrender.com/move", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        origem: selecionado,
-        destino: coord
-    })
-})
-.then(res => {
-    if (!res.ok) {
-        throw new Error("Erro HTTP: " + res.status);
-    }
-    return res.json();
-})
-.then(data => {
-    console.log("Resposta:", data);
-
-    if (data.erro) {
-        alert(data.erro);
-    }
-
-    selecionado = null;
-    atualizar();
-})
-.catch(err => {
-    console.error(err);
-    alert("Erro ao conectar com o servidor.");
-    selecionado = null;
-});
-
-
-// atualizar board
-function atualizar() {
-    fetch("https://xadrez-python-1.onrender.com/board")
-        .then(res => {
-            if (!res.ok) {
-                throw new Error("Erro ao buscar board");
-            }
-            return res.json();
+    fetch("/move", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            origem: selecionado,
+            destino: coord
         })
-        .then(data => {
-            console.log("Board:", data);
-            desenhar(data);
-        })
-        .catch(err => {
-            console.error(err);
-            console.log("Erro ao carregar tabuleiro");
-        });
-}
-
-
-// reset
-function resetar() {
-    fetch("https://xadrez-python-1.onrender.com/reset", {
-        method: "POST"
     })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error("Erro no reset");
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+
+        if (data.erro) {
+            alert(data.erro);
         }
-        return res.json();
-    })
-    .then(() => {
+
+        selecionado = null;
         atualizar();
     })
     .catch(err => {
         console.error(err);
-        alert("Erro ao resetar o jogo.");
+        alert("Erro ao conectar com o servidor.");
+        selecionado = null;
     });
 }
 
+function atualizar() {
+    fetch("/board")
+        .then(res => res.json())
+        .then(data => {
+            desenhar(data);
+        })
+        .catch(err => {
+            console.error("Erro ao carregar tabuleiro", err);
+        });
+}
 
-// iniciar
+function resetar() {
+    fetch("/reset", {
+        method: "POST"
+    })
+    .then(() => atualizar());
+}
+
 atualizar();
