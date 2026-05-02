@@ -68,7 +68,7 @@ function clicar(coord) {
     }
 
     // tentativa de jogada
-    fetch("http://127.0.0.1:5000/move", {
+    fetch("https://xadrez-python-1.onrender.com", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -97,7 +97,7 @@ function clicar(coord) {
 
 // busca o board atualizado
 function atualizar() {
-    fetch("http://127.0.0.1:5000/board")
+    fetch("https://xadrez-python-1.onrender.com")
         .then(res => res.json())
         .then(data => {
             desenhar(data);
