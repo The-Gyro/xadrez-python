@@ -60,7 +60,7 @@ O projeto é dividido em duas partes:
 ## 📦 Como executar localmente
 
 ```bash
-git clone https://github.com/SEU_USUARIO/xadrez-python.git
+git clone https://github.com/The-Gyro/xadrez-python.git
 cd xadrez-python
 pip install -r requirements.txt
 python app.py
