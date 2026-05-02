@@ -1,3 +1,4 @@
+console.log("JS CARREGOU");
 const tabuleiro = document.getElementById("tabuleiro");
 
 let selecionado = null;
